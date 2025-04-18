@@ -27,7 +27,7 @@ async function getReadMe(repo: Repo) {
 
 async function getStaredRepos() {
   const perPage = 100;
-  const repos = [];
+  const repos: Repo[] = [];
   let page = 1;
   while (true) {
     console.log(`Getting page ${page}`);

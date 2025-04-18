@@ -1,13 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "NodeNext" /* Specify what module code is generated. */,
-    "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */,
-    "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
-    "strict": true /* Enable all strict type-checking options. */,
-    "skipLibCheck": true /* Skip type checking all .d.ts files. */,
-    "noEmit": true,
-    "moduleResolution": "NodeNext",
-    "types": ["worker-configuration.d.ts"]
-  }
+    "target": "ESNext",
+    "module": "ES2022",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["./worker-configuration.d.ts", "node"]
+  },
+  "include": ["src/**/*", "worker/**/*", "script/**/*"],
+  "exclude": ["node_modules", "dist", ".next", "vercel"]
 }

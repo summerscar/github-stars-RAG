@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "github-stars",
-  "main": "src/index.ts",
+  "main": "worker/index.ts",
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-04-08",
   "ai": {
@@ -9,6 +9,10 @@
   },
   "observability": {
     "enabled": true,
+  },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
   },
   "migrations": [
     {
