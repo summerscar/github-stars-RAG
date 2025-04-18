@@ -1,0 +1,53 @@
+{
+  "name": "github-stars",
+  "type": "module",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "MIT",
+  "keywords": [],
+  "main": "index.js",
+  "files": [],
+  "scripts": {
+    "dev:stars": "tsx --env-file .env scripts/index.ts",
+    "build:stars": "tsx scripts/index.ts",
+    "upload:stars": "tsx --env-file .env scripts/upload.ts",
+    "dev:mcp": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "postinstall": "simple-git-hooks"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.787.0",
+    "@modelcontextprotocol/sdk": "^1.10.0",
+    "agents": "^0.0.60",
+    "fs-extra": "^11.3.0",
+    "ofetch": "^1.4.1",
+    "tsx": "^4.19.3",
+    "zod": "^3.24.3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "devDependencies": {
+    "@octokit/openapi-types": "^25.0.0",
+    "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^22.14.1",
+    "eslint": "^9.23.0",
+    "eslint-plugin-format": "^1.0.1",
+    "lint-staged": "^15.5.0",
+    "simple-git-hooks": "^2.12.1",
+    "wrangler": "^4.12.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  },
+  "volta": {
+    "node": "22.13.0"
+  }
+}

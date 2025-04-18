@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "github-stars",
+  "main": "src/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_date": "2025-04-08",
+  "ai": {
+    "binding": "AI",
+  },
+  "observability": {
+    "enabled": true,
+  },
+  "migrations": [
+    {
+      "new_sqlite_classes": ["GitHubStarsMCP"],
+      "tag": "v1",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "GitHubStarsMCP",
+        "name": "MCP_OBJECT",
+      },
+    ],
+  },
+}
