@@ -22,6 +22,7 @@ export interface AppState {
   isLoading: boolean;
   error: string | null;
   theme: ThemeMode;
+  settings: Setting | null;
 }
 
 interface Attribute {
@@ -44,3 +45,12 @@ type RAGItem = {
 };
 
 export type RAGResponse = RAGItem[];
+
+export type Setting = {
+  AUTO_RAG_TOKEN: string;
+  AUTO_RAG_NAME: string;
+  R2_ACCOUNT_ID: string;
+  R2_ACCESS_KEY_ID: string;
+  R2_SECRET_ACCESS_KEY: string;
+  R2_BUCKET: string;
+};

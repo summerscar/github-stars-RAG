@@ -1,12 +1,13 @@
 import { defineConfig } from "@rspack/cli";
 import { rspack } from "@rspack/core";
 import RefreshPlugin from "@rspack/plugin-react-refresh";
-import "dotenv/config";
+import { config } from "dotenv";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const isDev = process.env.NODE_ENV === "development";
+config({ path: [isDev ? ".env" : ".env.prod"] });
 
 // Target browsers, see: https://github.com/browserslist/browserslist
 const targets = ["chrome >= 87", "edge >= 88", "firefox >= 78", "safari >= 14"];
@@ -80,9 +81,6 @@ export default defineConfig({
       "process.env.GITHUB_REDIRECT_URI": JSON.stringify(
         process.env.GITHUB_REDIRECT_URI,
       ),
-      "process.env.R2_ACCOUNT_ID": JSON.stringify(process.env.R2_ACCOUNT_ID),
-      "process.env.AUTO_RAG_TOKEN": JSON.stringify(process.env.AUTO_RAG_TOKEN),
-      "process.env.AUTO_RAG_NAME": JSON.stringify(process.env.AUTO_RAG_NAME),
     }),
   ].filter(Boolean),
   optimization: {

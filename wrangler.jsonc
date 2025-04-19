@@ -2,13 +2,15 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "github-stars",
   "main": "worker/index.ts",
-  "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-04-08",
+  "routes": [
+    {
+      "pattern": "github-stars.app.summerscar.me",
+      "custom_domain": true,
+    },
+  ],
   "ai": {
     "binding": "AI",
-  },
-  "observability": {
-    "enabled": true,
   },
   "assets": {
     "directory": "./dist",

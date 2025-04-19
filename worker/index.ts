@@ -1,13 +1,43 @@
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 type EnvFile = {
   AUTO_RAG_NAME: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
 };
-const isDev = process.env.NODE_ENV === "development";
 
 export default {
   fetch: async (req: Request, env: Env & EnvFile, ctx: any) => {
+    const isDev = env.ENV === "development";
     const request = new URL(req.url);
+    console.log("request: ", request.pathname);
+
+    if (request.pathname === "/api/pre-signed-url") {
+      const bucket = request.searchParams.get("bucket")!;
+      const key = request.searchParams.get("file_key")!;
+      const r2_account_id = request.searchParams.get("r2_account_id");
+      const access_key_id = request.searchParams.get("access_key_id");
+      const secret_access_key = request.searchParams.get("secret_access_key");
+
+      const r2 = new S3Client({
+        region: "auto",
+        endpoint: `https://${r2_account_id}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: access_key_id!,
+          secretAccessKey: secret_access_key!,
+        },
+      });
+
+      const url = await getSignedUrl(
+        r2,
+        new PutObjectCommand({ Bucket: bucket, Key: key }),
+      );
+      return new Response(JSON.stringify({ url }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     if (request.pathname === "/api/auth/callback/github") {
       const code = request.searchParams.get("code");
       if (!code) {

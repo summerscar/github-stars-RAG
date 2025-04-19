@@ -1,12 +1,19 @@
 import { RAGResponse } from "@/types";
 
-const AUTO_RAG_NAME = process.env.AUTO_RAG_NAME;
-const AUTO_RAG_TOKEN = process.env.AUTO_RAG_TOKEN;
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID;
-
-export const searchRAG = async (query: string) => {
+export const searchRAG = async (
+  query: string,
+  {
+    AUTO_RAG_NAME,
+    AUTO_RAG_TOKEN,
+    R2_ACCOUNT_ID,
+  }: {
+    AUTO_RAG_NAME?: string;
+    AUTO_RAG_TOKEN?: string;
+    R2_ACCOUNT_ID?: string;
+  },
+) => {
   if (!AUTO_RAG_NAME || !AUTO_RAG_TOKEN || !R2_ACCOUNT_ID) {
-    throw new Error("Missing environment variables");
+    throw new Error("parameter is missing");
   }
   const response = await fetch(
     "/api/search?query=" +

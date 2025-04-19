@@ -1,16 +1,25 @@
 import { getToken, removeToken } from "@/services/github-login";
+import { getSettings, removeSettings } from "@/services/setting";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import {
   fetchStarredRepositories,
   getUserProfile,
 } from "../services/githubService";
-import { AppState, Collection, Repository, ThemeMode, User } from "../types";
+import {
+  AppState,
+  Collection,
+  Repository,
+  Setting,
+  ThemeMode,
+  User,
+} from "../types";
 
 // Define action types
 type Action =
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string | null }
   | { type: "SET_USER"; payload: User | null }
+  | { type: "SET_SETTINGS"; payload: Setting | null }
   | { type: "SET_REPOSITORIES"; payload: Repository[] }
   | { type: "UPDATE_REPOSITORY"; payload: Repository }
   | { type: "SET_COLLECTIONS"; payload: Collection[] }
@@ -30,6 +39,7 @@ const initialState: AppState = {
   isLoading: false,
   error: null,
   theme: "light",
+  settings: null,
 };
 
 // Create context
@@ -52,6 +62,8 @@ const appReducer = (state: AppState, action: Action): AppState => {
       return { ...state, user: action.payload };
     case "SET_REPOSITORIES":
       return { ...state, repositories: action.payload };
+    case "SET_SETTINGS":
+      return { ...state, settings: action.payload };
     case "UPDATE_REPOSITORY":
       return {
         ...state,
@@ -149,10 +161,11 @@ export const useLoadData = () => {
     try {
       const user = await getUserProfile();
       dispatch({ type: "SET_USER", payload: user });
+      dispatch({ type: "SET_SETTINGS", payload: getSettings() });
 
       const repositories = await fetchStarredRepositories();
       dispatch({ type: "SET_REPOSITORIES", payload: repositories });
-      console.log("repositories:", repositories);
+      // console.log("repositories:", repositories);
       // Extract unique tags from repositories
       const uniqueTags = Array.from(
         new Set(repositories.flatMap((repo) => repo.topics)),
@@ -168,8 +181,11 @@ export const useLoadData = () => {
         type: "SET_ERROR",
         payload: "Failed to load data. Please try again.",
       });
+      dispatch({ type: "SET_SETTINGS", payload: null });
       removeToken();
+      removeSettings();
       console.error("Error loading data:", error);
+      debugger;
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
     }

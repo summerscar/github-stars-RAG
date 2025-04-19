@@ -15,6 +15,7 @@ import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import Badge from "./ui/Badge";
 import Button from "./ui/Button";
+import { Dialog } from "./ui/Dialog";
 import Input from "./ui/Input";
 
 interface SidebarProps {
@@ -34,6 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
 
   const isComposingRef = React.useRef(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
 
   // Filter state
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,7 +66,11 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
       }
       try {
         setIsLoading(true);
-        const result = await searchRAG(query);
+        const result = await searchRAG(query, {
+          AUTO_RAG_NAME: state.settings?.AUTO_RAG_NAME,
+          AUTO_RAG_TOKEN: state.settings?.AUTO_RAG_TOKEN,
+          R2_ACCOUNT_ID: state.settings?.R2_ACCOUNT_ID,
+        });
         onFilterChange({
           ragResults: result,
         });
@@ -148,6 +155,12 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
             )
           }
         />
+        {!state.settings && (
+          <span className="text-xs text-orange-400 dark:text-orange-300 mt-1">
+            <SparklesIcon size={12} className="inline mr-1" />
+            Config setting to enable RAG search
+          </span>
+        )}
       </div>
 
       <div className={`mt-6 ${isOpen ? "px-4" : "px-2"} flex-1 overflow-auto`}>
@@ -228,10 +241,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
           variant="ghost"
           className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           icon={<SettingsIcon size={isOpen ? 16 : 20} />}
+          disabled={state.user === null}
+          onClick={() => {
+            dialogRef.current?.showModal();
+          }}
         >
           {isOpen ? "Settings" : ""}
         </Button>
       </div>
+      {state.user !== null && <Dialog ref={dialogRef} />}
     </div>
   );
 };

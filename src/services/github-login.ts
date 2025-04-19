@@ -9,7 +9,7 @@ const useGithubLogin = () => {
 const githubLogin = () => {
   const clientId = process.env.GITHUB_CLIENT_ID;
   const redirectUri = process.env.GITHUB_REDIRECT_URI;
-  const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}`;
+  const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${location.origin + redirectUri}`;
   window.location.href = url;
 };
 

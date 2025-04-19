@@ -1,3 +1,7 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}

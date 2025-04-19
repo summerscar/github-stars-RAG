@@ -22,9 +22,7 @@ interface DashboardProps {
 }
 
 const mapRagResultsToRepoNames = (ragResults: RAGResponse) => {
-  return ragResults.map(
-    (item) => item.filename.split("/").pop()!.split(".md")[0],
-  );
+  return ragResults.map((item) => item.filename.split(".md")[0]);
 };
 
 const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
@@ -63,7 +61,9 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
         (repo) =>
           repo.owner.login.toLowerCase().includes(searchLower) ||
           repo.name.toLowerCase().includes(searchLower) ||
-          repo.topics?.some(topic => topic.toLowerCase().includes(searchLower)) ||
+          repo.topics?.some((topic) =>
+            topic.toLowerCase().includes(searchLower),
+          ) ||
           repo.description?.toLowerCase().includes(searchLower),
       );
 
@@ -72,7 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
         result = [
           ...new Set([
             ...state.repositories.filter((repo) =>
-              repoNames.includes(repo.name),
+              repoNames.includes(repo.full_name),
             ),
             ...result,
           ]),

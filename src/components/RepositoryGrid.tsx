@@ -54,7 +54,7 @@ const RepositoryGrid: React.FC<RepositoryGridProps> = ({
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {repositories.map((repository) => (
         <RepositoryCard
-          hightLight={ragRepoNames.includes(repository.name)}
+          hightLight={ragRepoNames.includes(repository.full_name)}
           key={repository.id}
           repository={repository}
           onAddToCollection={onAddToCollection}
@@ -68,7 +68,7 @@ const RepositoryGrid: React.FC<RepositoryGridProps> = ({
       {repositories.map((repository) => (
         <RepositoryListItem
           key={repository.id}
-          hightLight={ragRepoNames.includes(repository.name)}
+          hightLight={ragRepoNames.includes(repository.full_name)}
           repository={repository}
           onAddToCollection={onAddToCollection}
           onAddTag={onAddTag}
