@@ -80,6 +80,9 @@ export default defineConfig({
       "process.env.GITHUB_REDIRECT_URI": JSON.stringify(
         process.env.GITHUB_REDIRECT_URI,
       ),
+      "process.env.R2_ACCOUNT_ID": JSON.stringify(process.env.R2_ACCOUNT_ID),
+      "process.env.AUTO_RAG_TOKEN": JSON.stringify(process.env.AUTO_RAG_TOKEN),
+      "process.env.AUTO_RAG_NAME": JSON.stringify(process.env.AUTO_RAG_NAME),
     }),
   ].filter(Boolean),
   optimization: {

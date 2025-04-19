@@ -1,7 +1,3 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { McpAgent } from "agents/mcp";
-import { z } from "zod";
-
 type EnvFile = {
   AUTO_RAG_NAME: string;
   GITHUB_CLIENT_ID: string;
@@ -9,35 +5,9 @@ type EnvFile = {
 };
 const isDev = process.env.NODE_ENV === "development";
 
-export class GitHubStarsMCP extends McpAgent {
-  server = new McpServer({ name: "GitHub Stars", version: "0.0.1" });
-  declare env: Env & EnvFile;
-  async init() {
-    this.server.tool(
-      "search_github_stars",
-      { query: z.string() },
-      async ({ query }) => {
-        const answer = await this.env.AI.autorag(this.env.AUTO_RAG_NAME).search(
-          {
-            query,
-          },
-        );
-
-        return {
-          content: [{ type: "text", text: JSON.stringify(answer.data) }],
-        };
-      },
-    );
-  }
-}
-
 export default {
   fetch: async (req: Request, env: Env & EnvFile, ctx: any) => {
     const request = new URL(req.url);
-    if (request.pathname === "/api/mcp") {
-      return GitHubStarsMCP.mount("/mcp").fetch(req, env as any, ctx);
-    }
-
     if (request.pathname === "/api/auth/callback/github") {
       const code = request.searchParams.get("code");
       if (!code) {
@@ -69,15 +39,25 @@ export default {
 
     if (request.pathname === "/api/search") {
       const query = request.searchParams.get("query");
-
+      const name = request.searchParams.get("name");
+      const token = request.searchParams.get("token");
+      const r2_account_id = request.searchParams.get("r2_account_id");
       if (!query) {
         return new Response("Missing query parameter", { status: 400 });
       }
-      const answer = await env.AI.autorag(env.AUTO_RAG_NAME).search({
-        query,
-      });
-
-      return new Response(JSON.stringify(answer.data), { status: 200 });
+      const answer = await fetch(
+        `https://api.cloudflare.com/client/v4/accounts/${r2_account_id}/autorag/rags/${name}/search`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ query }),
+        },
+      );
+      const data = await answer.json();
+      return new Response(JSON.stringify(data), { status: 200 });
     }
 
     return env.ASSETS.fetch(request);

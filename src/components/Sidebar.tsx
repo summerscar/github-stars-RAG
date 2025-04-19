@@ -1,5 +1,5 @@
 import { searchRAG } from "@/services/search-rag";
-import { RAGResponse } from "@/types";
+import type { RAGResponse } from "@/types";
 import { useMemoizedFn, useThrottleFn } from "ahooks";
 import {
   ArrowLeftRightIcon,
@@ -8,6 +8,7 @@ import {
   PlusIcon,
   SearchIcon,
   SettingsIcon,
+  SparklesIcon,
   TagIcon,
 } from "lucide-react";
 import React, { useState } from "react";
@@ -31,6 +32,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
   const { state } = useAppContext();
   const [isOpen, setIsOpen] = useState(true);
 
+  const isComposingRef = React.useRef(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   // Filter state
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -43,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
 
   const { run: throttledRAGSearch } = useThrottleFn(
     async (query: string) => {
+      if (isComposingRef.current) return;
       console.log("search...", query);
       onFilterChange({
         search: query,
@@ -56,13 +61,20 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
         });
         return;
       }
-      const result = await searchRAG(query);
-      onFilterChange({
-        ragResults: result,
-      });
+      try {
+        setIsLoading(true);
+        const result = await searchRAG(query);
+        onFilterChange({
+          ragResults: result,
+        });
+      } catch (error) {
+        console.error("Error fetching RAG data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     },
     {
-      wait: 350,
+      wait: 500,
       leading: false,
       trailing: true,
     },
@@ -117,10 +129,24 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
           onChange={(e) => {
             const query = e.target.value.trim();
             setSearchTerm(query);
-
             throttledRAGSearch(query);
           }}
-          icon={<SearchIcon size={16} className="text-gray-500" />}
+          onCompositionStart={() => {
+            isComposingRef.current = true;
+          }}
+          onCompositionEnd={() => {
+            isComposingRef.current = false;
+          }}
+          icon={
+            isLoading ? (
+              <SparklesIcon
+                size={16}
+                className="text-amber-300 animate-pulse"
+              />
+            ) : (
+              <SearchIcon size={16} className="text-gray-500" />
+            )
+          }
         />
       </div>
 

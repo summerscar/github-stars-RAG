@@ -63,7 +63,9 @@ const Button: React.FC<ButtonProps> = ({
           ></path>
         </svg>
       )}
-      {icon && !isLoading && <span className="">{icon}</span>}
+      {icon && !isLoading && (
+        <span className={`{children ? "mr-2" : ""}`}>{icon}</span>
+      )}
       {children}
     </button>
   );

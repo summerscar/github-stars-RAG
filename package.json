@@ -17,7 +17,7 @@
     "build:stars": "tsx scripts/index.ts",
     "upload:stars": "tsx --env-file .env scripts/upload.ts",
     "dev:server": "wrangler dev --port 8080",
-    "deploy": "wrangler deploy",
+    "deploy": "npm run build && wrangler deploy",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "postinstall": "simple-git-hooks",

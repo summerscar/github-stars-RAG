@@ -97,7 +97,7 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
             <span>{repository.forks_count.toLocaleString()}</span>
           </div>
           forks_count
-          <span>Updated {formatDate(repository.updated_at)}</span>
+          <span>Updated {formatDate(repository.updated_at!)}</span>
         </div>
         updated_at
       </div>

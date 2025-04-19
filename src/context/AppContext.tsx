@@ -1,4 +1,4 @@
-import { getToken } from "@/services/github-login";
+import { getToken, removeToken } from "@/services/github-login";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import {
   fetchStarredRepositories,
@@ -168,6 +168,7 @@ export const useLoadData = () => {
         type: "SET_ERROR",
         payload: "Failed to load data. Please try again.",
       });
+      removeToken();
       console.error("Error loading data:", error);
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });

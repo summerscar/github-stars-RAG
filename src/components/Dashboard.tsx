@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useAppContext, useLoadData } from "../context/AppContext";
-import { RAGResponse, Repository } from "../types";
+import type { RAGResponse, Repository } from "../types";
 import RepositoryGrid from "./RepositoryGrid";
 import Button from "./ui/Button";
 
@@ -63,6 +63,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
         (repo) =>
           repo.owner.login.toLowerCase().includes(searchLower) ||
           repo.name.toLowerCase().includes(searchLower) ||
+          repo.topics?.some(topic => topic.toLowerCase().includes(searchLower)) ||
           repo.description?.toLowerCase().includes(searchLower),
       );
 
