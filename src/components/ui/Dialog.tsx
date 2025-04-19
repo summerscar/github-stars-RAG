@@ -184,21 +184,20 @@ ${content}
             className="mt-1 block w-full rounded border-gray-300 dark:bg-gray-700 dark:text-gray-100"
           />
         </div>
-        {!!state.settings && (
-          <div>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isSyncing}
-              onClick={(e) => {
-                e.preventDefault();
-                syncFiles();
-              }}
-            >
-              {isSyncing ? `Syncing... ${progress}%` : "Sync Files"}
-            </Button>
-          </div>
-        )}
+
+        <div>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isSyncing || !state.settings}
+            onClick={(e) => {
+              e.preventDefault();
+              syncFiles();
+            }}
+          >
+            {isSyncing ? `Syncing... ${progress}%` : "Sync Files"}
+          </Button>
+        </div>
         <div className="flex justify-end">
           <Button
             type="submit"
