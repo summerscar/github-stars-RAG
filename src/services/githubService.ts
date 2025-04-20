@@ -3,8 +3,14 @@
 
 import { Repository } from "@/types";
 import { getOctokit } from "./github-login";
+import { getLocalRepository, setLocalRepository } from "./storage";
 
 export const fetchStarredRepositories = async () => {
+  const localCache = await getLocalRepository();
+  if (localCache) {
+    return localCache[0];
+  }
+
   // Simulate API call delay
   const octokit = getOctokit();
   const size = 100;
@@ -22,6 +28,8 @@ export const fetchStarredRepositories = async () => {
     currentSize = repos.data.length;
     result.push(...repos.data);
   }
+
+  setLocalRepository(result);
   return result;
 };
 

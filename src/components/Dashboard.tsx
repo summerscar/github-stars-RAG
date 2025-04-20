@@ -1,4 +1,5 @@
 import { githubLogin } from "@/services/github-login";
+import { getLocalRepository, removeLocalRepository } from "@/services/storage";
 import { useDebounceFn } from "ahooks";
 import {
   GithubIcon,
@@ -30,6 +31,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
   const { loadUserAndStars } = useLoadData();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filteredRepos, setFilteredRepos] = useState<Repository[]>([]);
+  const [updatedAt, setUpdatedAt] = useState<number>(0);
 
   const { run: loadData } = useDebounceFn(
     () => {
@@ -37,6 +39,17 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
     },
     { wait: 100 },
   );
+
+  useEffect(() => {
+    (async () => {
+      if (state.repositories.length > 0) {
+        const cache = await getLocalRepository();
+        if (cache) {
+          setUpdatedAt(cache[1]);
+        }
+      }
+    })();
+  }, [state.repositories]);
 
   useEffect(() => {
     // Load data on initial render
@@ -151,7 +164,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
         </p>
         <Button
           variant="primary"
-          onClick={() => loadUserAndStars()}
+          onClick={() => location.reload()}
           icon={<RefreshCwIcon size={16} />}
         >
           Try Again
@@ -187,7 +200,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 flex flex-col h-full">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -199,6 +212,19 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
         </div>
 
         <div className="flex items-center space-x-2">
+          {!!updatedAt && (
+            <span>version: {new Date(updatedAt).toLocaleString()}</span>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              removeLocalRepository();
+              loadUserAndStars();
+            }}
+            icon={<RefreshCwIcon size={16} />}
+            aria-label="Refresh"
+          />
           <Button
             variant={viewMode === "grid" ? "primary" : "outline"}
             size="sm"
@@ -215,15 +241,16 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
           />
         </div>
       </div>
-
-      <RepositoryGrid
-        ragRepoNames={mapRagResultsToRepoNames(filters.ragResults)}
-        repositories={filteredRepos}
-        onAddToCollection={handleAddToCollection}
-        onAddTag={handleAddTag}
-        onViewDetails={handleViewDetails}
-        viewMode={viewMode}
-      />
+      <div className="flex-1 overflow-auto">
+        <RepositoryGrid
+          ragRepoNames={mapRagResultsToRepoNames(filters.ragResults)}
+          repositories={filteredRepos}
+          onAddToCollection={handleAddToCollection}
+          onAddTag={handleAddTag}
+          onViewDetails={handleViewDetails}
+          viewMode={viewMode}
+        />
+      </div>
     </div>
   );
 };

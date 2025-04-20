@@ -58,9 +58,11 @@ export default {
       }>();
       if (response.ok) {
         const token = json.access_token;
-        const url = new URL("/", request.origin);
-        // 反代
-        isDev && (url.port = "3000");
+        const url = new URL(
+          "/",
+          isDev ? "http://localhost:3000" : request.origin,
+        );
+
         url.searchParams.set("access_token", token);
         return Response.redirect(url.toString(), 301);
       }

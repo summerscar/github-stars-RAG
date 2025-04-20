@@ -1,5 +1,6 @@
 import { getToken, removeToken } from "@/services/github-login";
 import { getSettings, removeSettings } from "@/services/setting";
+import { removeLocalRepository } from "@/services/storage";
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import {
   fetchStarredRepositories,
@@ -184,6 +185,7 @@ export const useLoadData = () => {
       dispatch({ type: "SET_SETTINGS", payload: null });
       removeToken();
       removeSettings();
+      removeLocalRepository();
       console.error("Error loading data:", error);
       debugger;
     } finally {
