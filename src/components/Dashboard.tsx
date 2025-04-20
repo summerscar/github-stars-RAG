@@ -241,7 +241,7 @@ const Dashboard: React.FC<DashboardProps> = ({ filters }) => {
           />
         </div>
       </div>
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto px-0.5 py-1">
         <RepositoryGrid
           ragRepoNames={mapRagResultsToRepoNames(filters.ragResults)}
           repositories={filteredRepos}
