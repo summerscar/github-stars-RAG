@@ -23,5 +23,5 @@ export const searchRAG = async (
       `&r2_account_id=${R2_ACCOUNT_ID}`,
   );
   const data = (await response.json()) as { result: { data: RAGResponse } };
-  return data.result.data;
+  return data?.result?.data || [];
 };
