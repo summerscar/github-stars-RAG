@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   BookmarkIcon,
   BookOpenIcon,
   GitForkIcon,
@@ -25,9 +26,9 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(navigator.language, {
       year: "numeric",
-      month: "short",
+      month: "numeric",
       day: "numeric",
     }).format(date);
   };
@@ -55,20 +56,39 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
     <div
       className={`flex items-start gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow ${hightLight ? "shadow-lg shadow-amber-300" : ""}`}
     >
-      <img
-        src={repository.owner.avatar_url}
-        alt={repository.owner.login}
-        className="w-10 h-10 rounded-full"
-        loading="lazy"
-      />
+      <a
+        href={repository.owner.html_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="contents"
+      >
+        <img
+          src={repository.owner.avatar_url}
+          alt={repository.owner.login}
+          className="w-10 h-10 rounded-full"
+          loading="lazy"
+        />
+      </a>
 
       <div className="flex-grow min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-            {repository.name}
+            <a
+              href={repository.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {repository.name}
+            </a>
           </h3>
           <span className="text-sm text-gray-600 dark:text-gray-400">
-            {repository.owner.login}
+            <a
+              href={repository.owner.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {repository.owner.login}
+            </a>
           </span>
         </div>
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
@@ -82,7 +102,7 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
           )}
 
           {repository.topics?.map((tag) => (
-            <Badge key={tag} color="gray" removable>
+            <Badge key={tag} color="gray" removable={false}>
               {tag}
             </Badge>
           ))}
@@ -92,15 +112,17 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
             <StarIcon size={14} className="mr-1" />
             <span>{repository.stargazers_count.toLocaleString()}</span>
           </div>
-          stargazers_count
+
           <div className="flex items-center">
             <GitForkIcon size={14} className="mr-1" />
             <span>{repository.forks_count.toLocaleString()}</span>
           </div>
-          forks_count
-          <span>Updated {formatDate(repository.updated_at!)}</span>
+
+          <div className="flex items-center">
+            <ActivityIcon size={14} className="mr-1" />
+            {formatDate(repository.updated_at!)}
+          </div>
         </div>
-        updated_at
       </div>
 
       <div className="flex items-center gap-2">
@@ -114,6 +136,7 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
         </Button>
 
         <Button
+          className="!hidden"
           variant="ghost"
           size="sm"
           onClick={() => onAddTag(repository.id)}

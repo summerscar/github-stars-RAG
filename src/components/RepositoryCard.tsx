@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   BookmarkIcon,
   BookOpenIcon,
   GitForkIcon,
@@ -28,9 +29,9 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(navigator.language, {
       year: "numeric",
-      month: "short",
+      month: "numeric",
       day: "numeric",
     }).format(date);
   };
@@ -59,21 +60,35 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({
       className={`h-full flex flex-col transition-all duration-300 ${hightLight ? "shadow-lg shadow-amber-300" : ""}`}
       hoverable
     >
-      <CardBody className="flex-grow">
+      <CardBody className="flex-grow flex flex-col">
         <div className="flex items-center mb-3">
-          <img
-            src={repository.owner.avatar_url}
-            alt={repository.owner.avatar_url}
-            className="w-6 h-6 rounded-full mr-2"
-            loading="lazy"
-          />
-          <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
-            {repository.owner.login}
-          </span>
+          <a
+            href={repository.owner.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contents"
+          >
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.avatar_url}
+              className="w-6 h-6 rounded-full mr-2"
+              loading="lazy"
+            />
+
+            <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
+              {repository.owner.login}
+            </span>
+          </a>
         </div>
 
         <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white truncate">
-          {repository.name}
+          <a
+            href={repository.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {repository.name}
+          </a>
         </h3>
 
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
@@ -94,7 +109,7 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({
           ))}
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center text-sm text-gray-500 dark:text-gray-400 gap-x-4">
+        <div className="items-end mt-auto flex flex-wrap text-sm text-gray-500 dark:text-gray-400 gap-x-4">
           <div className="flex items-center">
             <StarIcon size={14} className="mr-1" />
             <span>{repository.stargazers_count.toLocaleString()}</span>
@@ -103,8 +118,9 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({
             <GitForkIcon size={14} className="mr-1" />
             <span>{repository.forks_count.toLocaleString()}</span>
           </div>
-          <div className="">
-            <span>Updated {formatDate(repository.updated_at!)}</span>
+          <div className="flex items-center">
+            <ActivityIcon size={14} className="mr-1" />
+            {formatDate(repository.updated_at!)}
           </div>
         </div>
       </CardBody>
