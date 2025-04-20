@@ -1,6 +1,6 @@
 import { searchRAG } from "@/services/search-rag";
 import type { RAGResponse } from "@/types";
-import { useMemoizedFn, useThrottleFn } from "ahooks";
+import { useDebounceFn, useMemoizedFn } from "ahooks";
 import {
   ArrowLeftRightIcon,
   BookmarkIcon,
@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
     new Set(state.repositories.map((repo) => repo.language).filter(Boolean)),
   ).sort();
 
-  const { run: throttledRAGSearch } = useThrottleFn(
+  const { run: debouncedRAGSearch } = useDebounceFn(
     async (query: string) => {
       if (isComposingRef.current) return;
       console.log("search...", query);
@@ -82,8 +82,6 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
     },
     {
       wait: 500,
-      leading: false,
-      trailing: true,
     },
   );
 
@@ -136,13 +134,15 @@ const Sidebar: React.FC<SidebarProps> = ({ onFilterChange }) => {
           onChange={(e) => {
             const query = e.target.value.trim();
             setSearchTerm(query);
-            throttledRAGSearch(query);
+            debouncedRAGSearch(query);
           }}
           onCompositionStart={() => {
             isComposingRef.current = true;
           }}
-          onCompositionEnd={() => {
+          onCompositionEnd={(e) => {
+            const query = (e.target as HTMLInputElement).value.trim();
             isComposingRef.current = false;
+            debouncedRAGSearch(query);
           }}
           icon={
             isLoading ? (
