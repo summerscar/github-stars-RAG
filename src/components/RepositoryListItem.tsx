@@ -59,6 +59,7 @@ const RepositoryListItem: React.FC<RepositoryListItemProps> = ({
         src={repository.owner.avatar_url}
         alt={repository.owner.login}
         className="w-10 h-10 rounded-full"
+        loading="lazy"
       />
 
       <div className="flex-grow min-w-0">

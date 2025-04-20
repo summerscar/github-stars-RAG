@@ -65,6 +65,7 @@ const RepositoryCard: React.FC<RepositoryCardProps> = ({
             src={repository.owner.avatar_url}
             alt={repository.owner.avatar_url}
             className="w-6 h-6 rounded-full mr-2"
+            loading="lazy"
           />
           <span className="text-sm text-gray-600 dark:text-gray-400 truncate">
             {repository.owner.login}
