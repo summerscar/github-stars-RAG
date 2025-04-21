@@ -35,6 +35,8 @@ export const Dialog = ({
         `GET /repos/${repo.full_name}/readme`,
       );
       const content = atob(response.data.content);
+      const decodedText = decodeURIComponent(escape(content));
+
       const fileContent = `---
 project: ${repo.name}
 stars: ${repo.stargazers_count}
@@ -43,7 +45,7 @@ description: |-
 url: ${repo.html_url}
 ---
 
-${content}
+${decodedText}
 `;
       try {
         console.log(fileName, "Syncing files...");
