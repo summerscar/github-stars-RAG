@@ -17,7 +17,9 @@
 - `R2_SECRET_ACCESS_KEY`: R2 秘密访问密钥，用于访问 R2 存储。
 - `R2_BUCKET`: R2 存储桶名称，用于指定存储位置。
   - [配置 CORS 规则](https://developers.cloudflare.com/r2/buckets/cors/)，允许跨域访问。
-    - `[{"AllowedOrigins": ["https://github-stars.app.summerscar.me"],"AllowedMethods": ["GET","PUT"]}]`
+    - `[{"AllowedOrigins": ["https://github-stars.app.summerscar.me"],"AllowedMethods": ["GET","PUT"],"AllowedHeaders": [
+  "Content-Type"
+]}]`
 - `AUTO_RAG_NAME`: Auto RAG 名称，用于项目标识。
   - 创建 Auto RAG 时，选择对应的 R2_BUCKET
 - `AUTO_RAG_TOKEN`: Auto RAG 令牌，用于 API 身份验证。

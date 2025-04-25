@@ -62,7 +62,11 @@ const uploadFile = async ({
     access_key_id,
     secret_access_key,
   });
-  await fetch(url, { method: "PUT", body: file });
+  await fetch(url, {
+    method: "PUT",
+    body: file,
+    headers: { "Content-Type": "text/markdown" },
+  });
 };
 
 const buildTagFileName = ({
